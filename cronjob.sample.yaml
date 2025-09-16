@@ -32,8 +32,9 @@ spec:
                 # S3_PREFIX is optional; if omitted it will fall back to the cluster name.
                 - name: S3_PREFIX
                   value: 'important/backups'
+                # AGE_X25519_PUBLIC_KEY supports multiple recipients as comma-separated keys
                 - name: AGE_X25519_PUBLIC_KEY
-                  value: 'age1khpnnl86pzx96ttyjmldptsl5yn2v9jgmmzcjcufvk00ttkph9zs0ytgec'
+                  value: 'age1khpnnl86pzx96ttyjmldptsl5yn2v9jgmmzcjcufvk00ttkph9zs0ytgec,age1majtfe4q0u030xcjg0ent45stsfev28fjwy0saxqw4c3x85gge5s5gtkwx'
                 # ENABLE_COMPRESSION is optional; set this to true if you want to add compression to your etcd snapshot
                 # If enabled, snapshot will be compressed with zstd algorithm
                 - name: ENABLE_COMPRESSION

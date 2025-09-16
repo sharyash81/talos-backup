@@ -15,9 +15,9 @@ import (
 	"github.com/siderolabs/talos-backup/pkg/util"
 )
 
-// EncryptFile encrypts a file with an age X25519 public key.
-func EncryptFile(fileToEncryptPath, publicKey string) (string, error) {
-	encryptedFileName, err := encryptFile(fileToEncryptPath, publicKey)
+// EncryptFile encrypts a file with one or more age X25519 public keys.
+func EncryptFile(fileToEncryptPath string, publicKeys []string) (string, error) {
+	encryptedFileName, err := encryptFile(fileToEncryptPath, publicKeys)
 
 	if err != nil && encryptedFileName != "" {
 		util.CleanupFile(encryptedFileName)
@@ -26,11 +26,16 @@ func EncryptFile(fileToEncryptPath, publicKey string) (string, error) {
 	return encryptedFileName, err
 }
 
-// encryptFile encrypts a file with an age X25519 public key.
-func encryptFile(fileToEncryptPath, publicKey string) (string, error) {
-	recipient, err := age.ParseX25519Recipient(publicKey)
-	if err != nil {
-		return "", fmt.Errorf("failed to parse public key: %w", err)
+// encryptFile encrypts a file with one or more age X25519 public keys.
+func encryptFile(fileToEncryptPath string, publicKeys []string) (string, error) {
+	recipients := make([]age.Recipient, 0, len(publicKeys))
+	for _, key := range publicKeys {
+		recipient, err := age.ParseX25519Recipient(key)
+		if err != nil {
+			return "", fmt.Errorf("failed to parse public key: %w", err)
+		}
+
+		recipients = append(recipients, recipient)
 	}
 
 	fileToEncrypt, err := os.OpenFile(fileToEncryptPath, os.O_RDONLY, 0o600)
@@ -49,7 +54,7 @@ func encryptFile(fileToEncryptPath, publicKey string) (string, error) {
 
 	defer encryptedFile.Close() //nolint:errcheck
 
-	w, err := age.Encrypt(encryptedFile, recipient)
+	w, err := age.Encrypt(encryptedFile, recipients...)
 	if err != nil {
 		return "", fmt.Errorf("failed to encrypt file %q: %w", fileToEncryptPath, err)
 	}

@@ -6,19 +6,20 @@ package config
 
 import (
 	"os"
+	"strings"
 )
 
 // ServiceConfig holds configuration values for the etcd snapshot service.
 // The parameters CustomS3Endpoint, s3Prefix, clusterName are optional.
 type ServiceConfig struct {
-	CustomS3Endpoint   string `yaml:"customS3Endpoint"`
-	Bucket             string `yaml:"bucket"`
-	Region             string `yaml:"region"`
-	S3Prefix           string `yaml:"s3Prefix"`
-	ClusterName        string `yaml:"clusterName"`
-	AgeX25519PublicKey string `yaml:"ageX25519PublicKey"`
-	EnableCompression  bool   `yaml:"enableCompression"`
-	DisableEncryption  bool   `yaml:"disableEncryption"`
+	CustomS3Endpoint   string   `yaml:"customS3Endpoint"`
+	Bucket             string   `yaml:"bucket"`
+	Region             string   `yaml:"region"`
+	S3Prefix           string   `yaml:"s3Prefix"`
+	ClusterName        string   `yaml:"clusterName"`
+	AgeX25519PublicKey []string `yaml:"ageX25519PublicKey"`
+	EnableCompression  bool     `yaml:"enableCompression"`
+	DisableEncryption  bool     `yaml:"disableEncryption"`
 }
 
 const (
@@ -42,6 +43,6 @@ func GetServiceConfig() *ServiceConfig {
 		ClusterName:        os.Getenv(clusterNameEnvVar),
 		EnableCompression:  os.Getenv(enableCompressionEnvVar) == "true",
 		DisableEncryption:  os.Getenv(disableEncryptionEnvVar) == "true",
-		AgeX25519PublicKey: os.Getenv(ageX25519PublicKeyEnvVar),
+		AgeX25519PublicKey: strings.Split(os.Getenv(ageX25519PublicKeyEnvVar), ","),
 	}
 }
