@@ -340,7 +340,10 @@ func (suite *integrationTestSuite) startMinIO(ctx context.Context, pool *dockert
 	suite.serviceConfig.CustomS3Endpoint = "http://" + suite.minioResource.Container.NetworkSettings.IPAddress + ":" + minioS3APIPort
 	suite.serviceConfig.Bucket = bucketName
 	suite.serviceConfig.S3Prefix = "testdata/snapshots"
-	suite.serviceConfig.AgeX25519PublicKey = "age1khpnnl86pzx96ttyjmldptsl5yn2v9jgmmzcjcufvk00ttkph9zs0ytgec"
+	suite.serviceConfig.AgeX25519PublicKey = []string{
+		"age1khpnnl86pzx96ttyjmldptsl5yn2v9jgmmzcjcufvk00ttkph9zs0ytgec",
+		"age1majtfe4q0u030xcjg0ent45stsfev28fjwy0saxqw4c3x85gge5s5gtkwx",
+	}
 
 	return nil
 }
